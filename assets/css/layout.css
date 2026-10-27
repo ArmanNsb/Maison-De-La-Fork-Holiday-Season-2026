@@ -59,9 +59,9 @@
   font-weight: 400; letter-spacing: 0.02em;
   color: var(--ink-cream);
 }
-.hero__meta--year   { left: calc(76 * var(--u)); top: calc(843.5 * var(--u)); }
+.hero__meta--year   { left: calc(76 * var(--u)); bottom: calc(38.5 * var(--u)); }
 .hero__meta--scroll {
-  right: calc(73 * var(--u)); top: calc(850.6 * var(--u));
+  right: calc(73 * var(--u)); bottom: calc(33.4 * var(--u));
   display: flex; align-items: center; gap: calc(11 * var(--u));
   font-size: calc(15 * var(--u)); line-height: calc(16 * var(--u));
   letter-spacing: 0.1em;
@@ -93,9 +93,10 @@
   position: absolute; left: 0; right: 0;
   top: calc(575.1 * var(--u));
   text-align: center;
+  font-weight: 500;
   font-size: calc(20 * var(--u)); line-height: calc(20 * var(--u));
   letter-spacing: 0.005em;
-  color: #344664;
+  color: var(--navy);
 }
 
 /* ---------- 3. Collection ---------- */
@@ -208,7 +209,26 @@
   background: var(--frame);
   box-shadow: 0 calc(2 * var(--u)) calc(10 * var(--u)) rgba(10, 20, 40, .18);
 }
-.wrapped img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 14.5%; }
+.wrapped { --ox: .5; --oy: .145; }            /* = object-position of the photo */
+.wrapped__clip {                              /* the picture window inside the frame */
+  position: relative; width: 100%; height: 100%;
+  overflow: hidden; container-type: size;
+}
+.wrapped__media {                             /* photo + stamp, sized like object-fit: cover */
+  --w: max(100cqw, 100cqh * 1122 / 683);
+  position: absolute;
+  width: var(--w); height: calc(var(--w) * 683 / 1122);
+  left: calc((100cqw - var(--w)) * var(--ox));
+  top: calc((100cqh - var(--w) * 683 / 1122) * var(--oy));
+}
+.wrapped__photo { display: block; width: 100%; height: 100%; }
+.wrapped__stamp {                             /* the cupid pressed into the centre lattice */
+  position: absolute; left: 50.6%; top: 49.9%;
+  width: 9.2%; height: auto;
+  translate: -50% -50%;
+  opacity: .92;
+  mix-blend-mode: screen;
+}
 
 /* "Blend If" gold foil: the gold only survives where the paper underneath is light */
 .story__title {
@@ -234,7 +254,7 @@
 .order { position: relative; height: calc(1005 * var(--u)); z-index: 1; }
 .order__frame { isolation: isolate; }
 .order__bow {
-  position: absolute; left: calc(463 * var(--u)); top: calc(166 * var(--u));
+  position: absolute; left: calc(463 * var(--u)); top: calc(156 * var(--u));
   width: calc(516 * var(--u)); height: calc(644 * var(--u));
   background: url("../img/bow-mauve.webp") center / 100% 100% no-repeat;
   z-index: -1;
@@ -278,7 +298,7 @@
     rgba(255, 255, 255, .3);
 }
 .contact__bow { /* bow seen through the card, picks up the blue */
-  position: absolute; left: calc(161 * var(--u)); top: calc(-552 * var(--u));
+  position: absolute; left: calc(161 * var(--u)); top: calc(-562 * var(--u));
   width: calc(516 * var(--u)); height: calc(644 * var(--u));
   background: url("../img/bow-blue.webp") center / 100% 100% no-repeat;
   mix-blend-mode: multiply;
@@ -298,13 +318,14 @@
 .contact__grid { position: absolute; inset: 0; }
 .contact__cell { position: absolute; }
 .contact__cell dt {
+  font-weight: 500;
   font-size: calc(12 * var(--u)); line-height: calc(13 * var(--u));
   letter-spacing: 0.17em;
   color: var(--label);
 }
 .contact__cell dd {
   margin: 0;
-  font-weight: 500;
+  font-weight: 600;
   font-size: calc(16.5 * var(--u)); line-height: calc(20 * var(--u));
   letter-spacing: 0.01em;
   color: var(--navy);
@@ -322,4 +343,35 @@
 @media (min-width: 1024px) and (max-width: 1279.98px) {
   .contact__cell dt { font-size: max(9.5px, calc(12 * var(--u))); }
   .order__season { font-size: max(10.5px, calc(14.3 * var(--u))); }
+}
+
+/* ==========================================================================
+   VIEWPORT FIT (desktop, >= 1024px)
+   The build is drawn on a 1440 × 900 canvas. On laptops the browser window
+   is much wider than it is tall, so sections sized by width alone overflow
+   the screen. Here the hero, the cupid card and the collection also respect
+   the viewport height: their local unit (--u) shrinks until they fit, so
+   everything inside stays in proportion and the layout gets more compact.
+   On a full 1440 × 900 window nothing changes.
+   ========================================================================== */
+@media (min-width: 1024px) {
+  /* hero never taller than the window (but not shorter than ~560 design px) */
+  .hero { height: max(calc(560 * var(--u)), min(calc(900 * var(--u)), 100svh)); }
+  .hero__bg { object-position: 50% 80%; }
+
+  /* cupid card: as tall as the window allows */
+  .art { --u: max(calc(var(--u0) * .6), min(var(--u0), calc(100svh / 897))); }
+
+  /* collection: the photo (685 design px) fits with breathing room above/below */
+  .collection { --u: max(calc(var(--u0) * .6), min(var(--u0), calc((100svh - 160px) / 685))); }
+}
+
+/* Wide, short windows (most laptop/desktop browsers): bring the navy paper,
+   "Made in your name." and the text up under the photo — the paper is
+   cropped from the top, the berries stay with the text. */
+@media (min-width: 1024px) and (min-aspect-ratio: 17/10) {
+  .story { height: calc(1387 * var(--u)); }
+  .story__art img { top: calc(-437 * var(--u)); }
+  .story__title { top: calc(796.2 * var(--u)); }
+  .story__body { top: calc(1042.7 * var(--u)); }
 }

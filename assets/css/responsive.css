@@ -209,7 +209,8 @@
   }
   .art__caption {
     max-width: 17em; padding: 0;
-    font-size: 12px; line-height: 2; letter-spacing: .24em; text-indent: .24em;
+    font-weight: 500;
+    font-size: 12.5px; line-height: 2; letter-spacing: .22em; text-indent: .22em;
     color: var(--navy);
   }
 
@@ -249,7 +250,7 @@
     margin: -112px calc(-1 * var(--g) + 12px) 0;
     padding: 10px;
   }
-  .wrapped img { object-position: 48% 50%; }
+  .wrapped { --ox: .48; --oy: .5; }
   .story__title {
     margin-top: 64px;
     font-size: clamp(32px, 10vw, 46px); line-height: 1.16; --ls: .11em;
@@ -260,7 +261,7 @@
 
   /* ---------- 5. Order + contact ---------- */
   .order { padding: 150px var(--g) calc(40px + env(safe-area-inset-bottom)); }
-  .order__bow { top: calc(-1 * min(30vw, 118px)); width: min(96vw, 420px); opacity: .72; }
+  .order__bow { top: calc(-1 * min(30vw, 118px) - 10px); width: min(96vw, 420px); opacity: .72; }
   .order__title { font-size: clamp(54px, 16.5vw, 72px); line-height: .84; }
   .order__sub { margin-top: 30px; font-size: 18px; }
   .order__season { margin-top: 12px; font-size: 11px; --ls: .3em; }

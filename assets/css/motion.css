@@ -133,11 +133,11 @@
   transition: clip-path 2s var(--ease-out) var(--d);
 }
 .js [data-reveal="unveil"].is-in { clip-path: inset(0 0 0 0); }
-.js [data-reveal="unveil"] .art__cupid {
-  opacity: 0; scale: .9;
-  transition: opacity 1.6s var(--ease-silk) calc(var(--d) + .35s), scale 2.4s var(--ease-out) calc(var(--d) + .35s);
+.js [data-reveal="unveil"] .art__cupid {           /* fades in place — stitched to the fabric */
+  opacity: 0;
+  transition: opacity 1.8s var(--ease-silk) calc(var(--d) + .35s);
 }
-.js [data-reveal="unveil"].is-in .art__cupid { opacity: 1; scale: 1; }
+.js [data-reveal="unveil"].is-in .art__cupid { opacity: 1; }
 
 /* photo — frame wipes up, picture settles from a slow zoom */
 .js [data-reveal="photo"] {
@@ -145,8 +145,10 @@
   transition: clip-path 1.7s var(--ease-inout) var(--d), box-shadow .8s ease, transform .9s var(--ease-out);
 }
 .js [data-reveal="photo"].is-in { clip-path: inset(-12% -12% -12% -12%); }
-.js [data-reveal="photo"] img { scale: 1.22; transition: scale 2.6s var(--ease-out) var(--d); }
-.js [data-reveal="photo"].is-in img { scale: 1; }
+.js [data-reveal="photo"] .polaroid__clip img,
+.js [data-reveal="photo"] .wrapped__media { scale: 1.22; transition: scale 2.6s var(--ease-out) var(--d); }
+.js [data-reveal="photo"].is-in .polaroid__clip img,
+.js [data-reveal="photo"].is-in .wrapped__media { scale: 1; }
 
 /* bow — the ribbon is "drawn" from the knot down */
 .js [data-reveal="bow"] {
@@ -182,18 +184,14 @@
 @keyframes nudge { 0%, 100% { translate: 0 -2px; } 50% { translate: 0 3px; } }
 
 /* --------------------------------------------------------------------------
-   3. The art — the cupid breathes
+   3. The art — the cupid stays stitched to the fabric (no float, no parallax)
    -------------------------------------------------------------------------- */
-.art__cupid { animation: float 8s var(--ease-silk) infinite; }
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(-.5deg); }
-  50%      { transform: translateY(calc(-9 * var(--u, 1px))) rotate(.6deg); }
-}
-.js .art__card { background-position: 50% calc(50% + (var(--p, .5) - .5) * 60px); }
 
 /* --------------------------------------------------------------------------
-   4. Collection — tilt + inner parallax
+   4. Collection + story photos — inner parallax
    -------------------------------------------------------------------------- */
+/* the cupid stamp floats a few pixels above the pie as the photo scrolls by */
+.js .wrapped__stamp { transform: translate3d(0, calc((var(--p, .5) - .5) * -36 * var(--u, 1px)), 0); will-change: transform; }
 .collection__photo img {
   transform: translate3d(0, calc(var(--p, .5) * -110 * var(--u, 1px)), 0);
   will-change: transform;
@@ -214,7 +212,7 @@
   display: block;
   color: transparent; -webkit-text-fill-color: transparent;
   background-image:
-    linear-gradient(105deg, rgba(255, 238, 200, 0) 44%, rgba(255, 238, 200, .62) 50%, rgba(255, 238, 200, 0) 56%),
+    linear-gradient(105deg, rgba(255, 238, 200, 0) 42%, rgba(255, 238, 200, .3) 50%, rgba(255, 238, 200, 0) 58%),
     url("../img/gold-grain.webp");
   background-repeat: no-repeat, var(--g-rep);
   background-size: 300% 100%, var(--g-size);
@@ -223,7 +221,7 @@
   translate: 0 1.35em;
   transition: translate 1.7s var(--ease-out) calc(var(--d) + var(--li, 0) * 140ms);
 }
-.js .story__title.is-in .line { translate: 0 0; animation: shimmer 8s var(--ease-silk) 1.6s infinite; }
+.js .story__title.is-in .line { translate: 0 0; animation: shimmer 11s var(--ease-silk) 2.4s infinite; }
 @keyframes shimmer { 0% { --sx: 150%; } 34%, 100% { --sx: -50%; } }
 
 /* --------------------------------------------------------------------------
