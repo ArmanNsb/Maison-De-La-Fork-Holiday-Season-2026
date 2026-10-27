@@ -1,0 +1,287 @@
+/* ==========================================================================
+   4/4  motion.css — intro, reveals, parallax hooks, hover, cursor
+   Everything here is gated behind html.js (set in <head>), so without
+   JavaScript the page renders exactly as the static build.
+   Motion never touches `transform` used for layout: reveals animate the
+   individual `translate` / `scale` / `rotate` properties, parallax uses
+   `transform`, and they compose.
+   ========================================================================== */
+
+:root {
+  --ease-out: cubic-bezier(.16, 1, .3, 1);       /* expo-out: long, soft landing */
+  --ease-inout: cubic-bezier(.76, 0, .24, 1);    /* curtain moves */
+  --ease-silk: cubic-bezier(.45, .05, .2, 1);
+  --t-reveal: 1.4s;
+}
+
+@property --sx { syntax: "<percentage>"; inherits: false; initial-value: 150%; }
+
+/* --------------------------------------------------------------------------
+   0. Intro curtain
+   -------------------------------------------------------------------------- */
+.intro { display: none; }
+.js .intro {
+  position: fixed; inset: 0; z-index: 200;
+  display: grid; place-items: center;
+  background: var(--cream) url("../img/texture-cream-paper.webp") center / 2880px auto;
+  transition: translate 1.25s var(--ease-inout);
+}
+.js.no-intro .intro, .js.intro-done .intro { display: none; }
+.js.intro-out .intro { translate: 0 -100%; }
+.js:not(.intro-done):not(.no-intro) { overflow: hidden; }   /* no scrolling under the curtain */
+
+.intro__inner {
+  display: flex; flex-direction: column; align-items: center; gap: 22px;
+  transition: translate 1.25s var(--ease-inout), opacity .8s ease;
+}
+.intro-out .intro__inner { translate: 0 -40vh; opacity: 0; }
+/* the brand mark (assets/img/logo/logo-full.svg) — monogram, wordmark and
+   tagline are separate groups so each part has its own entrance */
+.intro__logo {
+  width: min(64vw, 280px); height: auto; aspect-ratio: 328.6 / 232;
+  fill: var(--navy); overflow: visible;
+}
+.intro__logo path { transform-box: fill-box; transform-origin: 50% 100%; }
+/* 1 — the M is inked from the bottom up */
+.logo__mark {
+  clip-path: inset(100% 0 0 0);
+  animation: intro-ink 1.3s var(--ease-silk) .15s forwards;
+}
+/* 2 — the name rises letter by letter out of a soft blur */
+.logo__word path {
+  opacity: 0; translate: 0 9px; filter: blur(3px);
+  animation: intro-letter 1.3s var(--ease-out) calc(.7s + var(--i) * 45ms) forwards;
+}
+/* 3 — "since 2012" draws together from wide tracking */
+.logo__tag path {
+  opacity: 0; translate: var(--dx) 0;
+  animation: intro-track 1.8s var(--ease-out) calc(1.05s + var(--i) * 20ms) forwards;
+}
+@keyframes intro-ink    { to { clip-path: inset(0 0 0 0); } }
+@keyframes intro-letter { to { opacity: 1; translate: 0 0; filter: blur(0); } }
+@keyframes intro-track  { to { opacity: 1; translate: 0 0; } }
+
+/* --------------------------------------------------------------------------
+   1. Reveal vocabulary   (data-reveal="…", optional data-delay="ms" → --d)
+   -------------------------------------------------------------------------- */
+.js [data-reveal] { --d: 0ms; }
+
+/* up — soft rise */
+.js [data-reveal="up"] {
+  opacity: 0; translate: 0 26px;
+  transition: opacity 1.1s var(--ease-out) var(--d), translate var(--t-reveal) var(--ease-out) var(--d);
+}
+/* fade */
+.js [data-reveal="fade"] { opacity: 0; transition: opacity 1.8s var(--ease-silk) var(--d); }
+/* drop — hanging garlands */
+.js [data-reveal="drop"] {
+  opacity: 0; translate: 0 -46px;
+  transition: opacity 1.6s var(--ease-silk) var(--d), translate 2.2s var(--ease-out) var(--d);
+}
+/* rise — monogram */
+.js [data-reveal="rise"] {
+  opacity: 0; translate: 0 16px; scale: .94;
+  transition: opacity 1.4s var(--ease-silk) var(--d), translate 1.8s var(--ease-out) var(--d), scale 1.8s var(--ease-out) var(--d);
+}
+.js [data-reveal="up"].is-in, .js [data-reveal="fade"].is-in,
+.js [data-reveal="drop"].is-in, .js [data-reveal="rise"].is-in { opacity: 1; translate: 0 0; scale: 1; }
+
+/* draw — hairlines */
+.js [data-reveal="draw"] { scale: 0 1; transform-origin: 0 50%; transition: scale 1.6s var(--ease-out) var(--d); }
+.js [data-reveal="draw-y"] { scale: 1 0; transform-origin: 50% 0; transition: scale 1.4s var(--ease-out) var(--d); }
+.js [data-reveal="draw"].is-in, .js [data-reveal="draw-y"].is-in { scale: 1 1; }
+
+/* mask — words rise out of an invisible slot (split by JS into .w > .w__i) */
+.js [data-split] .w {
+  display: inline-block;
+  clip-path: inset(-.4em -.35em -.28em -.35em);  /* slot slightly larger than the line */
+}
+.js [data-split] .w__i {
+  display: inline-block;
+  translate: 0 1.55em;
+  transition: translate 1.5s var(--ease-out) calc(var(--d) + var(--i) * 85ms);
+}
+.js [data-split].is-in .w__i { translate: 0 0; }
+
+/* chars — letters condense out of a soft blur */
+.js [data-split="chars"] .w { clip-path: none; }
+.js [data-split="chars"] .c {
+  display: inline-block;
+  opacity: 0; filter: blur(7px); translate: 0 .18em;
+  transition:
+    opacity 1.2s var(--ease-silk) calc(var(--d) + var(--i) * 45ms),
+    filter 1.4s var(--ease-out) calc(var(--d) + var(--i) * 45ms),
+    translate 1.6s var(--ease-out) calc(var(--d) + var(--i) * 45ms);
+}
+.js [data-split="chars"].is-in .c { opacity: 1; filter: blur(0); translate: 0 0; }
+
+/* track — wide-set capitals draw together out of a soft blur (keeps true kerning) */
+.js [data-reveal="track"] {
+  opacity: 0; filter: blur(8px);
+  letter-spacing: calc(var(--ls, 0em) + .32em); text-indent: calc(var(--ls, 0em) + .32em);
+  transition:
+    opacity 1.6s var(--ease-silk) var(--d),
+    filter 1.8s var(--ease-out) var(--d),
+    letter-spacing 2.4s var(--ease-out) var(--d),
+    text-indent 2.4s var(--ease-out) var(--d);
+}
+.js [data-reveal="track"].is-in { opacity: 1; filter: blur(0); letter-spacing: var(--ls, 0em); text-indent: var(--ls, 0em); }
+
+/* unveil — the embroidered card opens from its centre */
+.js [data-reveal="unveil"] {
+  clip-path: inset(9% 14% 9% 14%);
+  transition: clip-path 2s var(--ease-out) var(--d);
+}
+.js [data-reveal="unveil"].is-in { clip-path: inset(0 0 0 0); }
+.js [data-reveal="unveil"] .art__cupid {
+  opacity: 0; scale: .9;
+  transition: opacity 1.6s var(--ease-silk) calc(var(--d) + .35s), scale 2.4s var(--ease-out) calc(var(--d) + .35s);
+}
+.js [data-reveal="unveil"].is-in .art__cupid { opacity: 1; scale: 1; }
+
+/* photo — frame wipes up, picture settles from a slow zoom */
+.js [data-reveal="photo"] {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.7s var(--ease-inout) var(--d), box-shadow .8s ease, transform .9s var(--ease-out);
+}
+.js [data-reveal="photo"].is-in { clip-path: inset(-12% -12% -12% -12%); }
+.js [data-reveal="photo"] img { scale: 1.22; transition: scale 2.6s var(--ease-out) var(--d); }
+.js [data-reveal="photo"].is-in img { scale: 1; }
+
+/* bow — the ribbon is "drawn" from the knot down */
+.js [data-reveal="bow"] {
+  -webkit-mask-image: linear-gradient(to bottom, #000 42%, transparent 58%);
+          mask-image: linear-gradient(to bottom, #000 42%, transparent 58%);
+  -webkit-mask-size: 100% 320%; mask-size: 100% 320%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: 0 100%; mask-position: 0 100%;
+  transition: -webkit-mask-position 3s var(--ease-silk) var(--d), mask-position 3s var(--ease-silk) var(--d);
+}
+.js [data-reveal="bow"].is-in { -webkit-mask-position: 0 0; mask-position: 0 0; }
+
+/* --------------------------------------------------------------------------
+   2. Hero
+   -------------------------------------------------------------------------- */
+.js .hero__bg {
+  scale: 1.14;
+  transform: translate3d(0, calc(var(--hero-p, 0) * 24%), 0);
+  transition: scale 3.2s var(--ease-out);
+  will-change: transform;
+}
+.js.is-ready .hero__bg { scale: 1; }
+.js .hero__frame {
+  transform: translate3d(calc(var(--mx, 0) * -6px), calc(var(--hero-p, 0) * -140px + var(--my, 0) * -4px), 0);
+  opacity: calc(1 - var(--hero-p, 0) * 1.7);
+}
+.js .hero__deco { transform: translate3d(calc(var(--mx, 0) * 16px), calc(var(--hero-p, 0) * -90px + var(--my, 0) * 10px), 0); transform-origin: 50% 0; }
+.js .hero__deco.is-in { animation: sway 9s var(--ease-silk) 2.2s infinite alternate; }
+.js .hero__deco--right.is-in { animation-duration: 10.5s; animation-delay: 2.6s; animation-direction: alternate-reverse; }
+@keyframes sway { from { rotate: -1.4deg; } to { rotate: 1.6deg; } }
+.js .hero__meta[data-reveal].is-in { opacity: calc(1 - var(--hero-p, 0) * 3); }
+.hero__meta--scroll .hero__arrow { animation: nudge 2.6s var(--ease-silk) infinite; }
+@keyframes nudge { 0%, 100% { translate: 0 -2px; } 50% { translate: 0 3px; } }
+
+/* --------------------------------------------------------------------------
+   3. The art — the cupid breathes
+   -------------------------------------------------------------------------- */
+.art__cupid { animation: float 8s var(--ease-silk) infinite; }
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-.5deg); }
+  50%      { transform: translateY(calc(-9 * var(--u, 1px))) rotate(.6deg); }
+}
+.js .art__card { background-position: 50% calc(50% + (var(--p, .5) - .5) * 60px); }
+
+/* --------------------------------------------------------------------------
+   4. Collection — tilt + inner parallax
+   -------------------------------------------------------------------------- */
+.collection__photo img {
+  transform: translate3d(0, calc(var(--p, .5) * -110 * var(--u, 1px)), 0);
+  will-change: transform;
+}
+.js [data-tilt].is-tilting { transition: clip-path 1.7s var(--ease-inout), box-shadow .5s ease, transform .25s ease-out; }
+.js [data-tilt].is-hover { box-shadow: 0 30px 60px -20px rgba(60, 40, 25, .35), 0 6px 18px rgba(60, 40, 25, .12); }
+
+/* --------------------------------------------------------------------------
+   5. Story — foil lines press up, then a slow light sweeps the gold
+   -------------------------------------------------------------------------- */
+.js .story__title {
+  --g-x: calc(-86 * var(--u)); --g-y: calc(-83.2 * var(--u)); --g-step: calc(89 * var(--u));
+  --g-size: calc(800 * var(--u)) auto; --g-rep: no-repeat;
+  background: none; -webkit-text-fill-color: currentColor;
+}
+.js .story__title .line-mask { display: block; clip-path: inset(-.3em -.5em -.3em -.3em); }
+.js .story__title .line {
+  display: block;
+  color: transparent; -webkit-text-fill-color: transparent;
+  background-image:
+    linear-gradient(105deg, rgba(255, 238, 200, 0) 44%, rgba(255, 238, 200, .62) 50%, rgba(255, 238, 200, 0) 56%),
+    url("../img/gold-grain.webp");
+  background-repeat: no-repeat, var(--g-rep);
+  background-size: 300% 100%, var(--g-size);
+  background-position: var(--sx) 0, var(--g-x) calc(var(--g-y) - var(--li, 0) * var(--g-step));
+  -webkit-background-clip: text; background-clip: text;
+  translate: 0 1.35em;
+  transition: translate 1.7s var(--ease-out) calc(var(--d) + var(--li, 0) * 140ms);
+}
+.js .story__title.is-in .line { translate: 0 0; animation: shimmer 8s var(--ease-silk) 1.6s infinite; }
+@keyframes shimmer { 0% { --sx: 150%; } 34%, 100% { --sx: -50%; } }
+
+/* --------------------------------------------------------------------------
+   6. Contact — quiet hover states
+   -------------------------------------------------------------------------- */
+.contact__cell dd a {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size .7s var(--ease-out), color .4s ease;
+}
+.contact__cell dd a:hover, .contact__cell dd a:focus-visible { background-size: 100% 1px; }
+.contact__logo { transition: rotate 1.2s var(--ease-out); }
+.contact:hover .contact__logo { rotate: -4deg; }
+
+/* --------------------------------------------------------------------------
+   7. Cursor (fine pointers only — created by JS)
+   -------------------------------------------------------------------------- */
+.cursor, .cursor-ring {
+  position: fixed; left: 0; top: 0; z-index: 300;
+  pointer-events: none; border-radius: 50%;
+  mix-blend-mode: difference;
+  opacity: 0; transition: opacity .4s ease;
+}
+.cursor { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #fff; }
+.cursor-ring {
+  width: 38px; height: 38px; margin: -19px 0 0 -19px;
+  border: 1px solid rgba(255, 255, 255, .85);
+  transition: opacity .4s ease, scale .6s var(--ease-out), background-color .4s ease;
+}
+.has-cursor .cursor, .has-cursor .cursor-ring { opacity: 1; }
+.cursor-ring.is-link { scale: 1.6; background-color: rgba(255, 255, 255, .12); }
+.cursor-ring.is-photo { scale: 2.6; }
+.cursor-ring.is-down { scale: .8; }
+.has-cursor, .has-cursor a, .has-cursor [data-tilt] { cursor: none; }
+
+/* --------------------------------------------------------------------------
+   Tablet / mobile tuning
+   -------------------------------------------------------------------------- */
+@media (max-width: 1023.98px) {
+  .js .story__title { --g-x: -40px; --g-y: -60px; --g-step: 0px; --g-size: 800px auto; --g-rep: repeat; }
+  .js .hero__frame { transform: translate3d(0, calc(var(--hero-p, 0) * -90px), 0); }
+  .js [data-reveal="unveil"] { clip-path: inset(6% 8% 6% 8%); }
+  .collection__photo img { transform: translate3d(0, calc(var(--p, .5) * -12%), 0); }
+}
+
+/* --------------------------------------------------------------------------
+   Fail-safe + reduced motion: everything simply visible and still
+   -------------------------------------------------------------------------- */
+.reveal-all [data-reveal], .reveal-all [data-split] .w__i, .reveal-all [data-split] .c, .reveal-all .story__title .line {
+  opacity: 1 !important; translate: none !important; scale: none !important;
+  clip-path: none !important; filter: none !important; transition: none !important;
+  -webkit-mask-image: none !important; mask-image: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .intro { display: none; }
+  .js *, .js *::before, .js *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0ms !important; }
+  .js [data-reveal], .js [data-split] .w__i, .js [data-split] .c, .js .story__title .line {
+    opacity: 1; translate: none; scale: none; clip-path: none; filter: none;
+    -webkit-mask-image: none; mask-image: none;
+  }
+  .js .hero__bg, .js .hero__frame, .js .hero__deco, .collection__photo img { transform: none; scale: none; opacity: 1; }
+}

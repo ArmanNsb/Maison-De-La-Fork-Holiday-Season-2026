@@ -1,0 +1,325 @@
+/* ==========================================================================
+   2/4  layout.css — DESKTOP (>= 1024px)
+   1:1 build of the 1440px reference. Every size is written in design px
+   via --u (see base.css): it scales down below 1440px and stays fixed above,
+   where only the backgrounds keep growing sideways.
+   ========================================================================== */
+
+/* ---------- 1. Hero ---------- */
+.hero {
+  position: relative;
+  height: calc(900 * var(--u));
+  overflow: hidden;
+  background: #3b2219;
+  color: var(--ink-cream);
+}
+.hero__bg { /* photo 2111×910, 8px above the top as in the reference; always covers
+                the full section (no gap at the bottom), grows sideways on wide screens */
+  position: absolute; left: 0; top: calc(-8 * var(--u));
+  width: 100%; height: calc(100% + 8 * var(--u));
+  object-fit: cover; object-position: 50% 50%;
+}
+.hero__deco, .hero__meta { z-index: 1; }
+.hero__deco {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+.hero__deco--left  { left: calc(-16 * var(--u)); top: calc(-77 * var(--u)); width: calc(326.4 * var(--u)); }  /* 816×873 @ 40% */
+.hero__deco--right { right: calc(-37.2 * var(--u)); top: calc(-26 * var(--u)); width: calc(281.2 * var(--u)); } /* 703×734 @ 40% */
+
+.hero__logo {
+  position: absolute;
+  left: calc(665 * var(--u)); top: calc(143 * var(--u));
+  width: calc(107 * var(--u)); height: calc(100.5 * var(--u));
+  color: var(--ink-cream);
+}
+.hero__title {
+  position: absolute; left: 0; right: 0; top: 0;
+  text-align: center;
+}
+.hero__brand, .hero__season { position: absolute; left: 0; right: 0; white-space: nowrap; }
+.hero__brand {
+  top: calc(265.6 * var(--u));
+  font-family: var(--f-dahlia); font-weight: 400;
+  font-size: calc(61.1 * var(--u)); line-height: calc(60 * var(--u));
+}
+.hero__season {
+  top: calc(334.4 * var(--u));
+  --ls: 0.226em;
+  font-family: var(--f-serif);
+  font-size: calc(52.2 * var(--u)); line-height: calc(54 * var(--u));
+  letter-spacing: var(--ls, 0em); text-indent: var(--ls, 0em);
+  text-transform: uppercase;
+}
+.hero__meta {
+  position: absolute;
+  font-size: calc(18 * var(--u)); line-height: calc(18 * var(--u));
+  font-weight: 400; letter-spacing: 0.02em;
+  color: var(--ink-cream);
+}
+.hero__meta--year   { left: calc(76 * var(--u)); top: calc(843.5 * var(--u)); }
+.hero__meta--scroll {
+  right: calc(73 * var(--u)); top: calc(850.6 * var(--u));
+  display: flex; align-items: center; gap: calc(11 * var(--u));
+  font-size: calc(15 * var(--u)); line-height: calc(16 * var(--u));
+  letter-spacing: 0.1em;
+}
+.hero__arrow { width: calc(7 * var(--u)); height: calc(11.5 * var(--u)); transform: translateY(calc(-0.5 * var(--u))); }
+
+/* ---------- 2. The art behind the celebration ---------- */
+.art {
+  position: relative;
+  padding: calc(31 * var(--u)) calc(33 * var(--u)) calc(32 * var(--u)) calc(32 * var(--u));
+}
+.art::after { /* cool light falloff under the card */
+  content: ""; position: absolute; left: 0; right: 0;
+  top: calc(865 * var(--u)); height: calc(195 * var(--u));
+  background: linear-gradient(to bottom, rgba(248, 248, 254, .46), rgba(248, 248, 254, 0));
+  pointer-events: none; z-index: 0;
+}
+.art__card {
+  position: relative; z-index: 1;
+  height: calc(834 * var(--u));
+  background: #c3d3ea url("../img/texture-light-blue.webp") center / calc(2360 * var(--u)) auto repeat;
+}
+.art__cupid {
+  position: absolute;
+  left: calc(50% - 241.5 * var(--u)); top: calc(150 * var(--u));
+  width: calc(503.6 * var(--u)); height: auto;
+}
+.art__caption {
+  position: absolute; left: 0; right: 0;
+  top: calc(575.1 * var(--u));
+  text-align: center;
+  font-size: calc(20 * var(--u)); line-height: calc(20 * var(--u));
+  letter-spacing: 0.005em;
+  color: #344664;
+}
+
+/* ---------- 3. Collection ---------- */
+.collection { position: relative; height: calc(1126 * var(--u)); }
+.collection__title {
+  position: absolute; left: calc(258 * var(--u)); top: calc(198.6 * var(--u));
+  --ls: 0.326em;
+  font-family: var(--f-serif); text-transform: uppercase;
+  font-size: calc(47.2 * var(--u)); line-height: calc(53 * var(--u));
+  letter-spacing: var(--ls, 0em);
+  -webkit-text-stroke: var(--faux-bold) currentColor;
+  color: var(--navy);
+}
+.collection__list { position: absolute; left: 0; top: 0; width: calc(700 * var(--u)); height: 100%; }
+.item, .item__head, .item__detail { position: static; }
+.item__name, .item__lede, .item__label, .item__text { position: absolute; white-space: nowrap; }
+
+.item__name { color: var(--gold); text-transform: uppercase; }
+.item__name--dahlia {
+  font-family: var(--f-dahlia); font-weight: 500;
+  font-size: calc(34.3 * var(--u)); line-height: calc(37 * var(--u));
+  letter-spacing: 0;
+}
+.item__name--serif {
+  --ls: 0.1em;
+  font-family: var(--f-serif);
+  font-size: calc(34.3 * var(--u)); line-height: calc(38 * var(--u));
+  letter-spacing: var(--ls, 0em);
+  -webkit-text-stroke: var(--faux-bold) currentColor;
+}
+.item__lede {
+  font-weight: 500;
+  font-size: calc(17 * var(--u)); line-height: calc(20.5 * var(--u));
+  color: var(--gold);
+}
+.item__label {
+  font-weight: 600; letter-spacing: 0.01em;
+  font-size: calc(16.5 * var(--u)); line-height: calc(20 * var(--u));
+  color: var(--navy);
+}
+.item__text {
+  font-size: calc(17 * var(--u)); line-height: calc(20.7 * var(--u));
+  color: var(--navy);
+}
+.item__rule {
+  position: absolute; left: calc(250 * var(--u)); width: calc(237 * var(--u));
+  height: max(1px, calc(1.4 * var(--u))); background: var(--rule);
+}
+
+/* positions (design px, relative to section top 1797) */
+.item--pie .item__name    { left: calc(255 * var(--u)); top: calc(342.6 * var(--u)); }
+.item--pie .item__lede    { left: calc(256 * var(--u)); top: calc(389 * var(--u)); }
+.item--pie .item__label:nth-of-type(1) { left: calc(443 * var(--u)); top: calc(346 * var(--u)); }
+.item--pie .item__text:nth-of-type(1)  { left: calc(444 * var(--u)); top: calc(368 * var(--u)); }
+.item--pie .item__label:nth-of-type(2) { left: calc(442 * var(--u)); top: calc(404 * var(--u)); }
+.item--pie .item__text:nth-of-type(2)  { left: calc(442 * var(--u)); top: calc(426 * var(--u)); }
+.collection__list > .item__rule:nth-of-type(1) { top: calc(509.5 * var(--u)); }
+.item--cookies .item__name { left: calc(255 * var(--u)); top: calc(547.1 * var(--u)); }
+.item--cookies .item__text { left: calc(442 * var(--u)); top: calc(549 * var(--u)); }
+.collection__list > .item__rule:nth-of-type(2) { top: calc(662.5 * var(--u)); }
+.item--tower .item__name  { left: calc(251 * var(--u)); top: calc(691.6 * var(--u)); }
+.item--tower .item__lede  { left: calc(255 * var(--u)); top: calc(780 * var(--u)); }
+.item--tower .item__label:nth-of-type(1) { left: calc(442 * var(--u)); top: calc(695 * var(--u)); }
+.item--tower .item__text:nth-of-type(1)  { left: calc(442 * var(--u)); top: calc(716 * var(--u)); }
+.item--tower .item__label:nth-of-type(2) { left: calc(442 * var(--u)); top: calc(772 * var(--u)); }
+.item--tower .item__text:nth-of-type(2)  { left: calc(442 * var(--u)); top: calc(794 * var(--u)); }
+
+.polaroid {
+  position: absolute;
+  background: var(--frame);
+  box-shadow: calc(2 * var(--u)) calc(4 * var(--u)) calc(14 * var(--u)) rgba(70, 50, 35, .16);
+}
+.polaroid__clip { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.polaroid__clip img { position: absolute; max-width: none; }
+.collection__photo {
+  left: calc(733 * var(--u)); top: calc(164 * var(--u));
+  width: calc(490 * var(--u)); height: calc(685 * var(--u));
+  padding: calc(14 * var(--u)) calc(14 * var(--u)) calc(32 * var(--u));
+}
+.collection__photo img { left: calc(-24 * var(--u)); top: calc(1 * var(--u)); width: calc(510 * var(--u)); height: calc(765 * var(--u)); }
+
+/* ---------- 4. Story / Made in your name ---------- */
+.story {
+  position: relative;
+  height: calc(1497 * var(--u));   /* = bottom edge of the original navy artwork */
+  background: var(--navy-deep);
+  color: var(--ink-cream);
+  z-index: 2;
+  /* clip sides + top, let the berries spill onto the next section */
+  clip-path: inset(calc(-200 * var(--u)) 0 calc(-400 * var(--u)) 0);
+}
+.story__art {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  clip-path: inset(0 0 calc(-400 * var(--u)) 0);
+  overflow: visible;
+  pointer-events: none;
+}
+.story__art img {
+  position: absolute;
+  left: calc(50% - 1772 * var(--u));   /* artwork widened with 500px mirrored margins each side */
+  top: calc(-327 * var(--u));
+  width: calc(3520 * var(--u)); height: auto;
+}
+.wrapped {
+  position: absolute;
+  left: calc(72 * var(--u)); top: calc(-79 * var(--u));
+  width: calc(1295 * var(--u)); height: calc(733 * var(--u));
+  padding: calc(12 * var(--u)) calc(12 * var(--u)) calc(10 * var(--u));
+  background: var(--frame);
+  box-shadow: 0 calc(2 * var(--u)) calc(10 * var(--u)) rgba(10, 20, 40, .18);
+}
+.wrapped img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 14.5%; }
+
+/* "Blend If" gold foil: the gold only survives where the paper underneath is light */
+.story__title {
+  position: absolute; left: calc(184 * var(--u)); top: calc(906.2 * var(--u));
+  --ls: 0.13em;
+  font-family: var(--f-serif); text-transform: uppercase;
+  font-size: calc(76.2 * var(--u)); line-height: calc(89 * var(--u));
+  letter-spacing: var(--ls, 0em);
+  color: var(--gold-foil);
+  background: url("../img/gold-grain.webp") calc(-86 * var(--u)) calc(-83.2 * var(--u)) / calc(800 * var(--u)) auto no-repeat;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.story__title span { display: block; white-space: nowrap; }
+.story__body {
+  position: absolute; left: calc(183 * var(--u)); top: calc(1152.7 * var(--u));
+  font-size: calc(21.33 * var(--u)); line-height: calc(25.5 * var(--u));
+  white-space: nowrap;
+}
+.story__body p + p { margin-top: calc(36.5 * var(--u)); }
+
+/* ---------- 5. Order + contact ---------- */
+.order { position: relative; height: calc(1005 * var(--u)); z-index: 1; }
+.order__frame { isolation: isolate; }
+.order__bow {
+  position: absolute; left: calc(463 * var(--u)); top: calc(166 * var(--u));
+  width: calc(516 * var(--u)); height: calc(644 * var(--u));
+  background: url("../img/bow-mauve.webp") center / 100% 100% no-repeat;
+  z-index: -1;
+}
+.order__title {
+  position: absolute; left: calc(5 * var(--u)); right: 0; top: calc(320.2 * var(--u));
+  text-align: center;
+  font-family: var(--f-dahlia); font-weight: 400; text-transform: uppercase;
+  font-size: calc(80 * var(--u)); line-height: calc(66 * var(--u));
+  color: var(--navy);
+}
+.order__sub {
+  position: absolute; left: calc(30 * var(--u)); right: 0; top: calc(562.4 * var(--u));
+  text-align: center;
+  font-family: var(--f-dahlia); font-weight: 500;
+  font-size: calc(23.75 * var(--u)); line-height: calc(24 * var(--u));
+  color: var(--navy);
+}
+.order__season {
+  position: absolute; left: calc(30 * var(--u)); right: 0; top: calc(602.8 * var(--u));
+  --ls: 0.331em;
+  text-align: center;
+  font-family: var(--f-serif);
+  font-size: calc(14.3 * var(--u)); line-height: calc(14 * var(--u));
+  letter-spacing: var(--ls, 0em); text-indent: var(--ls, 0em);
+  -webkit-text-stroke: calc(var(--faux-bold) * .6) currentColor;
+  color: var(--navy);
+}
+
+.contact {
+  position: absolute; left: calc(302 * var(--u)); top: calc(718 * var(--u));
+  width: calc(831 * var(--u)); height: calc(160 * var(--u));
+  overflow: hidden;
+  background: #d5e1f1 url("../img/texture-light-blue.webp") center / calc(2494 * var(--u)) auto;
+  isolation: isolate;
+}
+.contact::before { /* lift the texture: 30% white, a little brighter toward the middle */
+  content: ""; position: absolute; inset: 0; z-index: -2;
+  background:
+    radial-gradient(60% 80% at 52% 100%, rgba(255, 255, 255, .28), rgba(255, 255, 255, 0) 70%),
+    rgba(255, 255, 255, .3);
+}
+.contact__bow { /* bow seen through the card, picks up the blue */
+  position: absolute; left: calc(161 * var(--u)); top: calc(-552 * var(--u));
+  width: calc(516 * var(--u)); height: calc(644 * var(--u));
+  background: url("../img/bow-blue.webp") center / 100% 100% no-repeat;
+  mix-blend-mode: multiply;
+  opacity: .6;
+  z-index: -1;
+}
+.contact__logo {
+  position: absolute; left: calc(60 * var(--u)); top: calc(42 * var(--u));
+  width: calc(80 * var(--u)); height: calc(75.2 * var(--u));
+  color: var(--navy);
+}
+.contact__rule {
+  position: absolute; left: calc(184 * var(--u)); top: calc(15 * var(--u));
+  width: max(1px, calc(3 * var(--u))); height: calc(127 * var(--u));
+  background: var(--rule-pink);
+}
+.contact__grid { position: absolute; inset: 0; }
+.contact__cell { position: absolute; }
+.contact__cell dt {
+  font-size: calc(12 * var(--u)); line-height: calc(13 * var(--u));
+  letter-spacing: 0.17em;
+  color: var(--label);
+}
+.contact__cell dd {
+  margin: 0;
+  font-weight: 500;
+  font-size: calc(16.5 * var(--u)); line-height: calc(20 * var(--u));
+  letter-spacing: 0.01em;
+  color: var(--navy);
+  white-space: nowrap;
+}
+.contact__cell dt + dd { margin-top: calc(4.5 * var(--u)); }
+.contact__cell--email   { left: calc(222 * var(--u)); top: calc(26.5 * var(--u)); }
+.contact__cell--phone   { left: calc(222 * var(--u)); top: calc(77.5 * var(--u)); }
+.contact__cell--web     { left: calc(530 * var(--u)); top: calc(26.5 * var(--u)); }
+.contact__cell--address { left: calc(530 * var(--u)); top: calc(77.5 * var(--u)); }
+
+.br-d { display: inline; }
+
+/* readability floor for the smallest desktop sizes (1024–1279px) */
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+  .contact__cell dt { font-size: max(9.5px, calc(12 * var(--u))); }
+  .order__season { font-size: max(10.5px, calc(14.3 * var(--u))); }
+}
